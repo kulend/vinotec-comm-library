@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import cn.vinotec.app.android.comm.library.R;
 import cn.vinotec.app.android.comm.utils.ApplicationUtil;
+import cn.vinotec.app.android.comm.utils.StringUtil;
 
 public class VinoWebView extends WebView {
 
@@ -27,6 +27,8 @@ public class VinoWebView extends WebView {
 	private View mViewError;
 	private String mHomeUrl;
 	private Handler mOnPageChangeHandler;
+	public String ActionSchema = "vino-app://";
+
 
     public VinoWebView(Context context) {
 		super(context);
@@ -45,6 +47,18 @@ public class VinoWebView extends WebView {
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	public void init(Activity activity, String homeUrl)
 	{
+		init(activity, homeUrl, null,null);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+	@SuppressWarnings("deprecation")
+	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
+	public void init(Activity activity, String homeUrl, String agent, String actionSchema)
+	{
+		if(StringUtil.isBlank(actionSchema))
+		{
+			this.ActionSchema = actionSchema;
+		}
 		this.activity = activity;
 		this.mHomeUrl = homeUrl;
 
@@ -55,14 +69,20 @@ public class VinoWebView extends WebView {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			settings.setPluginState(WebSettings.PluginState.ON);
 		}
+
+		if(StringUtil.isBlank(agent))
+		{
+			agent = "vinotec_app_android";
+		}
+
 		int versioncode = ApplicationUtil.getVersionCode(this.getContext());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 			// 设置UserAgent
 			String ua = WebSettings.getDefaultUserAgent(this.getContext());
-			getSettings().setUserAgentString(ua + " vinotec_app_android(" + versioncode + ")");
+			getSettings().setUserAgentString(ua + " " + agent +  " version(" + versioncode + ")");
 		} else {
 			String ua = settings.getDefaultUserAgent(this.getContext());
-			getSettings().setUserAgentString(ua + " vinotec_app_android(" + versioncode + ")");
+			getSettings().setUserAgentString(ua + " " + agent +  " version(" + versioncode + ")");
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
