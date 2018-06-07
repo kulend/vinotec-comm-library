@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 25
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+    useLibrary 'org.apache.http.legacy'
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/systembartint-1.0.4.jar')
+    compile files('libs/jackson-all-1.9.2.jar')
+    implementation files('libs/core-3.1.0.jar')
+    implementation files('libs/universal-image-loader-1.9.1.jar')
+    compile files('libs/httpmime-4.2.1.jar')
+    compile 'com.android.support:support-v4:25.3.0'
+}

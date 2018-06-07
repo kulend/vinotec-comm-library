@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App下载对话框 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/app_comm_dialog_bg"
+>
+
+    <TextView android:id="@+id/tv_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="15dp"
+              android:layout_marginLeft="30dp"
+              android:layout_marginRight="30dp"
+              android:layout_centerHorizontal="true"
+              android:textColor="#666666"
+              android:text="更新下载中，请稍后..."
+              android:textSize="22sp"
+    />
+
+    <ProgressBar
+            android:id="@+id/download_progress"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:progress="0"
+            android:layout_below="@+id/tv_title"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/vino_progressbar" />
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/tv_title"
+                  android:layout_marginTop="50dp"
+                  android:layout_marginBottom="20dp"
+                  android:orientation="horizontal"
+                  android:gravity="center_horizontal"
+    >
+        <Button android:id="@+id/btn_cancel"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:text="取 消"
+                android:textSize="18sp"
+                android:textColor="#999999"
+                android:background="@drawable/app_btn_comm_write_bg"
+        />
+    </LinearLayout>
+
+</RelativeLayout>
