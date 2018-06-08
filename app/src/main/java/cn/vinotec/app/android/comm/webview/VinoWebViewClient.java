@@ -33,10 +33,11 @@ public class VinoWebViewClient extends WebViewClient {
 	protected VinoWebView mWebView;
     protected Activity mActivity;
 
-	protected static final String APP_SCHEME = "vino-app://";
+	protected static String APP_SCHEME = "vino-app://";
 
 	public VinoWebViewClient(VinoWebView webView) {
 		this.mWebView = webView;
+		this.APP_SCHEME = webView.ActionSchema;
         this.mActivity = webView.activity;
 		this.context = webView.getContext();
 		this.rm = new ResourcesManager(context);
