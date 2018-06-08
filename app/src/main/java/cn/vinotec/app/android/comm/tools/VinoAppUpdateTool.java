@@ -33,6 +33,8 @@ import cn.vinotec.app.android.comm.view.VinoAppUpdateDialog;
 
 public class VinoAppUpdateTool
 {
+	public static String AppUpdateCheckUrl = "https://datacenter.vinotec.cn:8070/api/version/check?appkey=%s&version=%s";
+
     //定义回调事件，用于dialog的点击事件
     public interface OnAppUpdateListener{
         void OnReceive(AppVersionEntity VersionInfo);

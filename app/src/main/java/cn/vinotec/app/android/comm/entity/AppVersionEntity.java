@@ -1,10 +1,16 @@
 package cn.vinotec.app.android.comm.entity;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class AppVersionEntity
 {
 	public int update;
 	private String version;
+
+	@JsonProperty("updateLog")
 	private String update_log;
+
+	@JsonProperty("downloadUrl")
 	private String download_url;
 
 	public int getUpdate()
