@@ -55,7 +55,7 @@ public class VinoWebView extends WebView {
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi" })
 	public void init(Activity activity, String homeUrl, String agent, String actionSchema)
 	{
-		if(StringUtil.isBlank(actionSchema))
+		if(!StringUtil.isBlank(actionSchema))
 		{
 			this.ActionSchema = actionSchema;
 		}
