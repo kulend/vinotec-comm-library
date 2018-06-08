@@ -49,6 +49,9 @@ public class VinoActivity extends Activity implements VinoBasePage {
 
 	private AsynImageLoader asynImageLoader;
 
+	protected boolean TwoBackClickFinish = false;
+	protected boolean TwoBackClickExit = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +59,8 @@ public class VinoActivity extends Activity implements VinoBasePage {
         if(clazz.isAnnotationPresent(VinoActivityAnnotation.class))
         {
             annotation = (VinoActivityAnnotation)clazz.getAnnotation(VinoActivityAnnotation.class);
+			TwoBackClickFinish = annotation.TwoBackClickFinish();
+			TwoBackClickExit = annotation.TwoBackClickExit();
         }
 
         context = this;
@@ -225,50 +230,43 @@ public class VinoActivity extends Activity implements VinoBasePage {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		//判断是否有相关注解
-		Class clazz = this.getClass();
-		if(clazz.isAnnotationPresent(VinoActivityAnnotation.class))
+		if(TwoBackClickFinish || TwoBackClickExit)
 		{
-			VinoActivityAnnotation anno = (VinoActivityAnnotation)clazz.getAnnotation(VinoActivityAnnotation.class);
-			if(anno != null && (anno.TwoBackClickFinish() || anno.TwoBackClickExit()))
+			if (keyCode == KeyEvent.KEYCODE_BACK)
 			{
-				if (keyCode == KeyEvent.KEYCODE_BACK)
+				switch (keyBackClickCount++)
 				{
-					switch (keyBackClickCount++)
-					{
-						case 0:
-							if(anno.TwoBackClickExit())
+					case 0:
+						if(TwoBackClickExit)
+						{
+							Toast.makeText(this, getResources().getString(R.string.toast_press_again_exit), Toast.LENGTH_SHORT).show();
+						}else
+						{
+							Toast.makeText(this, getResources().getString(R.string.toast_press_again_finish), Toast.LENGTH_SHORT).show();
+						}
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask()
+						{
+							@Override
+							public void run()
 							{
-								Toast.makeText(this, getResources().getString(R.string.toast_press_again_exit), Toast.LENGTH_SHORT).show();
-							}else
-							{
-								Toast.makeText(this, getResources().getString(R.string.toast_press_again_finish), Toast.LENGTH_SHORT).show();
+								keyBackClickCount = 0;
 							}
-							Timer timer = new Timer();
-							timer.schedule(new TimerTask()
-							{
-								@Override
-								public void run()
-								{
-									keyBackClickCount = 0;
-								}
-							}, 3000);
-							break;
-						case 1:
-							if(anno.TwoBackClickExit())
-							{
-								VinoApplication.getInstance().exitApp();
-							}else
-							{
-								finish();
-							}
-							break;
-					}
-					return true;
+						}, 3000);
+						break;
+					case 1:
+						if(TwoBackClickExit)
+						{
+							VinoApplication.getInstance().exitApp();
+						}else
+						{
+							finish();
+						}
+						break;
 				}
+				return true;
 			}
 		}
-
 		return super.onKeyDown(keyCode, event);
 	}
 
