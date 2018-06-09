@@ -7,13 +7,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v4.view.KeyEventCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
@@ -947,11 +945,11 @@ public class CustomViewAbove extends ViewGroup {
 				if (Build.VERSION.SDK_INT >= 11) {
 					// The focus finder had a bug handling FOCUS_FORWARD and FOCUS_BACKWARD
 					// before Android 3.0. Ignore the tab key on those devices.
-					if (KeyEventCompat.hasNoModifiers(event)) {
-						handled = arrowScroll(FOCUS_FORWARD);
-					} else if (KeyEventCompat.hasModifiers(event, KeyEvent.META_SHIFT_ON)) {
-						handled = arrowScroll(FOCUS_BACKWARD);
-					}
+//					if (KeyEventCompat.hasNoModifiers(event)) {
+//						handled = arrowScroll(FOCUS_FORWARD);
+//					} else if (KeyEventCompat.hasModifiers(event, KeyEvent.META_SHIFT_ON)) {
+//						handled = arrowScroll(FOCUS_BACKWARD);
+//					}
 				}
 				break;
 			}
