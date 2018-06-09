@@ -66,11 +66,6 @@ public class ImagePagerActivity extends FragmentActivity {
 		mPager.setCurrentItem(pagerPosition);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt(STATE_POSITION, mPager.getCurrentItem());
-	}
-
 	private class ImagePagerAdapter extends FragmentStatePagerAdapter {
 
 		public List<ShowImageEntity> fileList;
