@@ -35,7 +35,7 @@ public class VinoAppUpdateDialog extends Dialog {
 
         setContentView(R.layout.vino_app_update_dialog);
 
-        setCancelable(true);
+        setCancelable(false);
         setCanceledOnTouchOutside(false);
 
         TextView tv = (TextView) findViewById(R.id.tv_update_log);

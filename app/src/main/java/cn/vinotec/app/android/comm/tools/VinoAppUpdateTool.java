@@ -2,9 +2,7 @@ package cn.vinotec.app.android.comm.tools;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -445,23 +443,35 @@ public class VinoAppUpdateTool
 			return;
 		}
 
-        // 通过Intent安装APK文件
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        //版本在7.0以上是不能直接通过uri访问的
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
-            // 由于没有在Activity环境下启动Activity,设置下面的标签
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
-            String packagea = VinoApplication.getContext().getPackageName();
-            Uri apkUri = FileProvider.getUriForFile(context, VinoApplication.getContext().getPackageName() + ".fileprovider", apkfile);
-            Log.d("VinoAppUpdateTool", "apkUri:" + apkUri.toString());
-            //添加这一句表示对目标应用临时授权该Uri所代表的文件
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-        } else {
-            intent.setDataAndType(Uri.fromFile(apkfile), "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		try
+        {
+            // 通过Intent安装APK文件
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            //版本在7.0以上是不能直接通过uri访问的
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                // 由于没有在Activity环境下启动Activity,设置下面的标签
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
+                Uri apkUri = FileProvider.getUriForFile(context, VinoApplication.getContext().getPackageName() + ".fileprovider", apkfile);
+                Log.d("VinoAppUpdateTool", "apkUri:" + apkUri.toString());
+                //添加这一句表示对目标应用临时授权该Uri所代表的文件
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            } else {
+                intent.setDataAndType(Uri.fromFile(apkfile), "application/vnd.android.package-archive");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            VinoApplication.getContext().startActivity(intent);
         }
-        VinoApplication.getContext().startActivity(intent);
+        catch (Exception ex)
+        {
+            ToastUtil.debugToast(context, ex.getMessage());
+            ex.printStackTrace();
+
+            ToastUtil.showShortToast(context, "安装出错，正在尝试重新安装！");
+            Uri uri = Uri.parse(VersionInfo.getDownload_url());
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(intent);
+        }
 	}
 }

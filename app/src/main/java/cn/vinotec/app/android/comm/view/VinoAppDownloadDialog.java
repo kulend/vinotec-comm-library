@@ -32,7 +32,7 @@ public class VinoAppDownloadDialog extends Dialog {
 
         setContentView(R.layout.vino_app_download_dialog);
 
-        setCancelable(true);
+        setCancelable(false);
         setCanceledOnTouchOutside(false);
 
         download_progress = (ProgressBar) findViewById(R.id.download_progress);
