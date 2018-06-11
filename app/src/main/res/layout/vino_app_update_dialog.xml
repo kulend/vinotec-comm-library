@@ -1,80 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 应用更新对话框 -->
+<?xml version="1.0" encoding="utf-8"?><!-- 应用更新对话框 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/app_comm_dialog_bg"
->
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/app_comm_dialog_bg">
 
-    <TextView android:id="@+id/tv_title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="15dp"
-              android:layout_marginLeft="30dp"
-              android:layout_marginRight="30dp"
-              android:layout_centerHorizontal="true"
-              android:textColor="#666666"
-              android:text="应用更新"
-              android:textSize="22sp"
-    />
-    <View android:id="@+id/line1"
-            android:layout_width="match_parent"
-          android:layout_height="1dp"
-          android:layout_below="@+id/tv_title"
-          android:layout_marginTop="15dp"
-          android:layout_marginLeft="30dp"
-          android:layout_marginRight="30dp"
-          android:layout_centerHorizontal="true"
-          android:background="#d7d7d7"
-    />
-    <TextView android:id="@+id/tv_update_log"
-            android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/line1"
-              android:layout_marginTop="10dp"
-              android:layout_marginLeft="30dp"
-              android:layout_marginRight="30dp"
-              android:textColor="#666666"
-              android:textSize="14sp"
-              android:text=""
-    />
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="25dp"
+        android:text="应用更新"
+        android:textColor="#777777"
+        android:textSize="18sp" />
 
-    <View android:id="@+id/line2"
-          android:layout_width="match_parent"
-          android:layout_height="1dp"
-          android:layout_below="@+id/tv_update_log"
-          android:layout_marginTop="10dp"
-          android:layout_marginLeft="30dp"
-          android:layout_marginRight="30dp"
-          android:layout_centerHorizontal="true"
-          android:background="#d7d7d7"
-    />
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_below="@+id/line2"
-                  android:layout_marginTop="15dp"
-                  android:layout_marginBottom="20dp"
-                  android:orientation="horizontal"
-                  android:gravity="center_horizontal"
-    >
-        <Button android:id="@+id/btn_cancel"
-                android:layout_width="110dp"
-                android:layout_height="40dp"
-                android:text="取 消"
-                android:textSize="17sp"
-                android:textColor="#999999"
-                android:background="@drawable/app_btn_comm_write_bg"
-        />
+    <TextView
+        android:id="@+id/tv_update_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:text="弹窗内容，文本尽量控制在三行内"
+        android:textColor="#999999"
+        android:textSize="14sp" />
 
-        <Button android:id="@+id/btn_ok"
-                android:layout_width="110dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="30dp"
-                android:text="更 新"
-                android:textSize="17sp"
-                android:textColor="@color/white"
-                android:background="@drawable/app_btn_comm_red_bg"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_update_log"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="40dp"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:text="取 消"
+            android:textColor="#666666"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="30dp"
+            android:background="@null"
+            android:text="开始更新"
+            android:textColor="#09BB07"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </RelativeLayout>

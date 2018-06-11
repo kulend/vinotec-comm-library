@@ -10,7 +10,6 @@ import android.view.Display;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 import cn.vinotec.app.android.comm.activity.ImagePagerActivity;
 import cn.vinotec.app.android.comm.entity.ShowImageEntity;
 import cn.vinotec.app.android.comm.tools.ResourcesManager;
@@ -22,7 +21,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import java.io.Serializable;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,9 +44,6 @@ public class VinoWebViewClient extends WebViewClient {
 	// 重写shouldOverrideUrlLoading方法，使点击链接后不使用其他的浏览器打开。
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		// mWebView.getSettings().setLoadsImagesAutomatically(false);
-		// view.loadUrl(url);
-		// 如果不需要其他对点击链接事件的处理返回true，否则返回false
 		mWebView.sendPageChangeMessage(url);
         if (url.startsWith(APP_SCHEME)) {
             String action = parseActionFromUrl(url);
@@ -162,6 +157,7 @@ public class VinoWebViewClient extends WebViewClient {
 
 	public boolean onUrlLoading(WebView view, String url)
     {
+        view.loadUrl(url);
         return false;
     }
 

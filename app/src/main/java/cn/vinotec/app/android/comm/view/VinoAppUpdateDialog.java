@@ -14,7 +14,7 @@ public class VinoAppUpdateDialog extends Dialog {
     //定义回调事件，用于dialog的点击事件
     public interface OnAppUpdateDialogListener{
         void OnCancel();
-        void OnOk();
+        void OnOk(VinoAppUpdateDialog dialog);
     }
 
     private OnAppUpdateDialogListener appUpdateDialogListener;
@@ -58,10 +58,10 @@ public class VinoAppUpdateDialog extends Dialog {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VinoAppUpdateDialog.this.dismiss();
+                //VinoAppUpdateDialog.this.dismiss();
                 if(appUpdateDialogListener != null)
                 {
-                    appUpdateDialogListener.OnOk();
+                    appUpdateDialogListener.OnOk(VinoAppUpdateDialog.this);
                 }
             }
         });

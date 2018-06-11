@@ -13,6 +13,9 @@ public class AppVersionEntity
 	@JsonProperty("downloadUrl")
 	private String download_url;
 
+	@JsonProperty("isForce")
+	private boolean isForce;
+
 	public int getUpdate()
 	{
 		return update;
@@ -51,5 +54,11 @@ public class AppVersionEntity
 		this.download_url = download_url;
 	}
 
+	public boolean isForce() {
+		return isForce;
+	}
 
+	public void setForce(boolean force) {
+		isForce = force;
+	}
 }

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,6 +21,11 @@ import android.os.Message;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+
 import cn.vinotec.app.android.comm.VinoApplication;
 import cn.vinotec.app.android.comm.entity.ApiReply;
 import cn.vinotec.app.android.comm.entity.AppVersionEntity;
@@ -46,10 +52,14 @@ public class VinoAppUpdateTool
 	private static final int DOWNLOAD = 1;
 	/* 下载完成 */
 	private static final int DOWNLOAD_FINISH = 2;
-	
+    /* 下载停止 */
+    private static final int DOWNLOAD_CANCEL = 6;
+
 	private static final int ACTION_CHECK_SILENT = 3;
 	private static final int ACTION_CHECK = 4;
     private static final int ACTION_CHECK_INFO = 5;
+
+
 
     private Context context;
 	/* 下载保存路径 */
@@ -101,6 +111,13 @@ public class VinoAppUpdateTool
 				// 安装文件
 					installApk();
 					break;
+                case DOWNLOAD_CANCEL:
+                    // 下载取消
+                    if(VersionInfo.isForce())
+                    {
+                        VinoApplication.getInstance().exitApp();
+                    }
+                    break;
 			case ACTION_CHECK:
 				// 检查更新
 				if (VersionInfo == null)
@@ -268,10 +285,31 @@ public class VinoAppUpdateTool
         VinoAppUpdateDialog dialog = new VinoAppUpdateDialog(context, VersionInfo.getUpdate_log(), new VinoAppUpdateDialog.OnAppUpdateDialogListener() {
             @Override
             public void OnCancel() {
+            	if(VersionInfo.isForce())
+				{
+					VinoApplication.getInstance().exitApp();
+				}
             }
             @Override
-            public void OnOk() {
-                showDownloadDialog();
+            public void OnOk(final VinoAppUpdateDialog dialog1) {
+                AndPermission.with(context)
+                        .runtime()
+                        .permission(Permission.Group.STORAGE)
+                        .onGranted(new Action<List<String>>() {
+                            @Override
+                            public void onAction(List<String> data) {
+                                dialog1.dismiss();
+                                showDownloadDialog();
+                            }
+                        })
+                        .onDenied(new Action<List<String>>() {
+                            @Override
+                            public void onAction(List<String> data) {
+                                Uri uri = Uri.parse(VersionInfo.getDownload_url());
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                context.startActivity(intent);
+                            }
+                        }).start();
             }
         });
         dialog.show();
@@ -283,17 +321,17 @@ public class VinoAppUpdateTool
 	 */
 	private void showDownloadDialog()
 	{
-		// 构造软件下载对话框
-		mDownloadDialog = new VinoAppDownloadDialog(context, new VinoAppDownloadDialog.OnAppDownloadDialogListener() {
+        // 构造软件下载对话框
+        mDownloadDialog = new VinoAppDownloadDialog(context, new VinoAppDownloadDialog.OnAppDownloadDialogListener() {
             @Override
             public void OnCancel() {
                 // 设置取消状态
                 cancelUpdate = true;
             }
         });
-		mDownloadDialog.show();
-		// 下载文件
-		downloadApk();
+        mDownloadDialog.show();
+        // 下载文件
+        downloadApk();
 	}
 
 	/**
@@ -320,30 +358,26 @@ public class VinoAppUpdateTool
 				if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
 				{
 					// 获得存储卡的路径
-					String sdpath = Environment.getExternalStorageDirectory() + "/";
-					mSavePath = sdpath + "vino/download/";
+					mSavePath = Environment.getExternalStorageDirectory() + "/Download/";
 					URL url = new URL(VersionInfo.getDownload_url());
-					Log.d("VinoAppUpdateTool", "下载文件：" + url);
 					// 创建连接
 					URLConnection conn = url.openConnection();
 					// 获取文件大小
 					int length = conn.getContentLength();
-					Log.d("VinoAppUpdateTool", "下载文件大小：" + length);
+					Log.d("VinoAppUpdateTool", "下载文件：" + url + "[" + length + "]");
+
 					// 创建输入流
 					InputStream is = conn.getInputStream();
-
 					File file = new File(mSavePath);
 					// 判断文件目录是否存在
 					if (!file.exists())
 					{
-						boolean ret = file.mkdirs();
-						Log.d("VinoAppUpdateTool", "创建目录：" + mSavePath + ";" + ret);
+                        file.mkdirs();
 					}
                     String filepath = "app_" + VinoAppKey + "_" + VersionInfo.getVersion() + ".apk";
 					File apkFile = new File(mSavePath, filepath);
 					if(apkFile.exists())
 			        {
-						Log.d("VinoAppUpdateTool", "删除已存在文件：" + apkFile.getName());
 						apkFile.delete();
 			        }
 					FileOutputStream fos = new FileOutputStream(mSavePath + filepath);
@@ -372,22 +406,27 @@ public class VinoAppUpdateTool
 					while (!cancelUpdate);// 点击取消就停止下载.
 					fos.close();
 					is.close();
+
+					if(cancelUpdate)
+                    {
+                        // 下载中断
+                        Log.d("VinoAppUpdateTool", "下载中断");
+                        mHandler.sendEmptyMessage(DOWNLOAD_CANCEL);
+                    }
 				}else
 				{
 					Uri uri = Uri.parse(VersionInfo.getDownload_url());
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 					context.startActivity(intent);
-//					ToastUtil.makeText(VinoApplication.getContext(), "没有SD卡或者没有SD卡读写权限！", Toast.LENGTH_LONG).show();
-//					Log.d("VinoAppUpdateTool", "没有SD卡或者没有SD卡读写权限！");
 				}
-				
-			} catch (MalformedURLException e)
-			{
-				e.printStackTrace();
-			} catch (IOException e)
+			} catch (Exception e)
 			{
 				ToastUtil.showShortToast(context, e.getMessage());
 				e.printStackTrace();
+
+                Uri uri = Uri.parse(VersionInfo.getDownload_url());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                context.startActivity(intent);
 			}
 			// 取消下载对话框显示
 			mDownloadDialog.dismiss();
@@ -405,16 +444,7 @@ public class VinoAppUpdateTool
 		{
 			return;
 		}
-		
-		// 保存设置
-		// SharedPreferences settings =
-		// PreferenceManager.getDefaultSharedPreferences(mContext);
-		// Editor editor = settings.edit();
-		// editor.remove(mContext.getResources().getString(R.string.auto_update_last_time_key));
-		// editor.putLong(mContext.getResources().getString(R.string.auto_update_last_time_key),
-		// (new Date()).getTime());
-		// editor.commit();
-		
+
 		// 通过Intent安装APK文件
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		//版本在7.0以上是不能直接通过uri访问的
