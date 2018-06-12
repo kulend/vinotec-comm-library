@@ -52,6 +52,7 @@ public class VinoAppUpdateTool
 	private static final int DOWNLOAD_FINISH = 2;
     /* 下载停止 */
     private static final int DOWNLOAD_CANCEL = 6;
+    private static final int DOWNLOAD_ERROR = 7;
 
 	private static final int ACTION_CHECK_SILENT = 3;
 	private static final int ACTION_CHECK = 4;
@@ -115,6 +116,15 @@ public class VinoAppUpdateTool
                     if(VersionInfo.isForce())
                     {
                         VinoApplication.getInstance().exitApp();
+                    }
+                    break;
+                case DOWNLOAD_ERROR:
+                    // 下载出错
+                    if(VersionInfo != null)
+                    {
+                        Uri uri = Uri.parse(VersionInfo.getDownload_url());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(intent);
                     }
                     break;
 			case ACTION_CHECK:
@@ -422,21 +432,16 @@ public class VinoAppUpdateTool
                     }
 				}else
 				{
-					Uri uri = Uri.parse(VersionInfo.getDownload_url());
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					context.startActivity(intent);
+                    Log.d("VinoAppUpdateTool", "下载出错");
+                    mHandler.sendEmptyMessage(DOWNLOAD_ERROR);
 				}
 			} catch (Exception e)
 			{
-				ToastUtil.showShortToast(context, e.getMessage());
 				e.printStackTrace();
 
-                Uri uri = Uri.parse(VersionInfo.getDownload_url());
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                context.startActivity(intent);
+                Log.d("VinoAppUpdateTool", "下载出错" + e.getMessage());
+                mHandler.sendEmptyMessage(DOWNLOAD_ERROR);
 			}
-			// 取消下载对话框显示
-			//mDownloadDialog.dismiss();
 		}
 	};
 
