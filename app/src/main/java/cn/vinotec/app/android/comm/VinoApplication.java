@@ -6,6 +6,8 @@ import java.util.List;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
+
 import cn.vinotec.app.android.comm.annotation.VinoApplicationAnnotation;
 import cn.vinotec.app.android.comm.library.R;
 import cn.vinotec.app.android.comm.sqlite.DBHelper;
@@ -56,11 +58,15 @@ public class VinoApplication extends Application
         //初始化图片加载工具
 		VinoImageLoadTool.init(EmptyPhotoResId);
 
-//		JPushInterface.setDebugMode(true);
-//		JPushInterface.init(this);
 		ToastUtil.debugToast(this, "当前处于调试模式!");
 
 		DBHelper.getInstance(this).ExecSQL("DROP TABLE IF EXISTS temp1");
+	}
+
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
+		MultiDex.install(base);
 	}
 
     public static Context getContext() {
