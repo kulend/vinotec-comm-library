@@ -15,11 +15,13 @@ public class VinoAppDownloadDialog extends Dialog {
     //定义回调事件，用于dialog的点击事件
     public interface OnAppDownloadDialogListener{
         void OnCancel();
+        void OnInstall();
     }
 
     private OnAppDownloadDialogListener appDownloadDialogListener;
     private ProgressBar download_progress;
     private Button btn_cancel;
+    private Button btn_install;
 
     public VinoAppDownloadDialog(Context context, OnAppDownloadDialogListener listener) {
         super(context, R.style.MyDialog);
@@ -48,10 +50,25 @@ public class VinoAppDownloadDialog extends Dialog {
                 VinoAppDownloadDialog.this.dismiss();
             }
         });
+
+        btn_install = (Button) findViewById(R.id.btn_install);
+        btn_install.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(appDownloadDialogListener != null)
+                {
+                    appDownloadDialogListener.OnInstall();
+                }
+            }
+        });
     }
 
     public void updateProgress(int progress)
     {
         download_progress.setProgress(progress);
+        if(progress == 100)
+        {
+            btn_install.setVisibility(View.VISIBLE);
+        }
     }
 }

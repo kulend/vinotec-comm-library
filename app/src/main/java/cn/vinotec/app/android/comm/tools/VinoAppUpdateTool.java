@@ -93,20 +93,20 @@ public class VinoAppUpdateTool
 			switch (msg.what)
 			{
 				case DOWNLOAD:
-				// 正在下载
-				// 设置进度条位置
+				    // 正在下载
+				    // 设置进度条位置
                     if(mDownloadDialog != null)
                     {
                         mDownloadDialog.updateProgress(progress);
                     }
 					break;
 				case DOWNLOAD_FINISH:
-				// 下载完成
-//                    if(mDownloadDialog != null)
-//                    {
-//                        mDownloadDialog.dismiss();
-//                    }
-				// 安装文件
+				    // 下载完成
+                    if(mDownloadDialog != null)
+                    {
+                        mDownloadDialog.updateProgress(100);
+                    }
+				    // 安装文件
 					installApk();
 					break;
                 case DOWNLOAD_CANCEL:
@@ -262,16 +262,15 @@ public class VinoAppUpdateTool
 		protected void onPostExecute(ApiReply<AppVersionEntity> reply)
 		{
 			inCheck = false;
+            VersionInfo = null;
 			if (reply == null)
 			{
 				ToastUtil.makeText(VinoApplication.getContext(), "当前网络状况不良！", Toast.LENGTH_SHORT).show();
-				return;
-			}
-			if (reply.getCode() == 0)
+			}else if (reply.getCode() == 0)
 			{
 				VersionInfo = reply.getData();
-				mHandler.sendEmptyMessage(action);
 			}
+            mHandler.sendEmptyMessage(action);
 		}
 	}
 
@@ -325,6 +324,11 @@ public class VinoAppUpdateTool
             public void OnCancel() {
                 // 设置取消状态
                 cancelUpdate = true;
+            }
+            @Override
+            public void OnInstall() {
+                // 安装
+                installApk();
             }
         });
         mDownloadDialog.show();
