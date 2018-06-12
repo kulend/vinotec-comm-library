@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_pressed="true" android:drawable="@color/default_titlebar_btn_bg"/>
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#2000" />
+            <padding android:bottom="2dp" android:left="3dp" android:right="3dp" android:top="2dp" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <padding android:bottom="2dp" android:left="3dp" android:right="3dp" android:top="2dp" />
+            <corners android:radius="2dp" />
+        </shape>
+    </item>
 </selector>
