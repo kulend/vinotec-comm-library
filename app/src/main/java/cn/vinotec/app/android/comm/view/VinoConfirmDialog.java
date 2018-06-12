@@ -2,6 +2,7 @@ package cn.vinotec.app.android.comm.view;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -46,27 +47,31 @@ public class VinoConfirmDialog extends Dialog {
         btn_positive.setText(mParams.mPositiveButtonText);
         setButtomTheme(btn_positive, mParams.mPositiveButtonTheme);
 
-        if (mParams.mNegativeButtonOnClickListener != null) {
-            btn_negative.setOnClickListener(mParams.mNegativeButtonOnClickListener);
-        } else {
-            btn_negative.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        btn_negative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mParams.mNegativeButtonOnClickListener != null)
+                {
+                    mParams.mNegativeButtonOnClickListener.onClick(VinoConfirmDialog.this, R.id.btn_positive);
+                }else
+                {
                     VinoConfirmDialog.this.dismiss();
                 }
-            });
-        }
+            }
+        });
 
-        if (mParams.mPositiveButtonOnClickListener != null) {
-            btn_positive.setOnClickListener(mParams.mPositiveButtonOnClickListener);
-        } else {
-            btn_positive.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        btn_positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mParams.mPositiveButtonOnClickListener != null)
+                {
+                    mParams.mPositiveButtonOnClickListener.onClick(VinoConfirmDialog.this, R.id.btn_positive);
+                }else
+                {
                     VinoConfirmDialog.this.dismiss();
                 }
-            });
-        }
+            }
+        });
     }
 
     private void setButtomTheme(Button btn, int theme) {
@@ -115,7 +120,7 @@ public class VinoConfirmDialog extends Dialog {
             return this;
         }
 
-        public Builder setPositiveButton(CharSequence text, View.OnClickListener listener) {
+        public Builder setPositiveButton(CharSequence text, DialogInterface.OnClickListener listener) {
             mParams.mPositiveButtonText = text;
             mParams.mPositiveButtonOnClickListener = listener;
             return this;
@@ -126,7 +131,7 @@ public class VinoConfirmDialog extends Dialog {
             return this;
         }
 
-        public Builder setNegativeButton(CharSequence text, View.OnClickListener listener) {
+        public Builder setNegativeButton(CharSequence text, DialogInterface.OnClickListener listener) {
             mParams.mNegativeButtonText = text;
             mParams.mNegativeButtonOnClickListener = listener;
             return this;
@@ -158,12 +163,12 @@ public class VinoConfirmDialog extends Dialog {
             public CharSequence mMessage;
 
             public CharSequence mPositiveButtonText;
-            public View.OnClickListener mPositiveButtonOnClickListener;
+            public DialogInterface.OnClickListener mPositiveButtonOnClickListener;
             public int mPositiveButtonTheme;
 
 
             public CharSequence mNegativeButtonText;
-            public View.OnClickListener mNegativeButtonOnClickListener;
+            public DialogInterface.OnClickListener mNegativeButtonOnClickListener;
             public int mNegativeButtonTheme;
 
         }
