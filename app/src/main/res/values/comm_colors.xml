@@ -21,4 +21,9 @@
     <color name="wheelview_line_border">#C7C7C7</color>
 
     <color name="ripple_color">#999999</color>
+
+    <!-- 对话框 -->
+    <color name="dialog_button_default">#666666</color>
+    <color name="dialog_button_positive">#09BB07</color>
+    <color name="dialog_button_negative">#ef4f4f</color>
 </resources>

@@ -427,7 +427,7 @@ public class VinoAppUpdateTool
                 context.startActivity(intent);
 			}
 			// 取消下载对话框显示
-			mDownloadDialog.dismiss();
+			//mDownloadDialog.dismiss();
 		}
 	};
 
