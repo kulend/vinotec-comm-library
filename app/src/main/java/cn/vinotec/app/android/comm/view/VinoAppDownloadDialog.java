@@ -22,6 +22,7 @@ public class VinoAppDownloadDialog extends Dialog {
     private ProgressBar download_progress;
     private Button btn_cancel;
     private Button btn_install;
+    private Button btn_uninstall;
 
     public VinoAppDownloadDialog(Context context, OnAppDownloadDialogListener listener) {
         super(context, R.style.MyDialog);
@@ -61,6 +62,18 @@ public class VinoAppDownloadDialog extends Dialog {
                 }
             }
         });
+
+        btn_uninstall = (Button) findViewById(R.id.btn_uninstall);
+        btn_uninstall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(appDownloadDialogListener != null)
+                {
+                    appDownloadDialogListener.OnCancel();
+                }
+                VinoAppDownloadDialog.this.dismiss();
+            }
+        });
     }
 
     public void updateProgress(int progress)
@@ -69,6 +82,8 @@ public class VinoAppDownloadDialog extends Dialog {
         if(progress == 100)
         {
             btn_install.setVisibility(View.VISIBLE);
+            btn_uninstall.setVisibility(View.VISIBLE);
+            btn_cancel.setVisibility(View.GONE);
         }
     }
 }

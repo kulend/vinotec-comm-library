@@ -104,7 +104,8 @@ public class VinoAppUpdateTool
 				    // 下载完成
                     if(mDownloadDialog != null)
                     {
-                        mDownloadDialog.updateProgress(100);
+                        progress = 100;
+                        mDownloadDialog.updateProgress(progress);
                     }
 				    // 安装文件
 					installApk();
@@ -324,6 +325,10 @@ public class VinoAppUpdateTool
             public void OnCancel() {
                 // 设置取消状态
                 cancelUpdate = true;
+                if(progress == 100 && VersionInfo.isForce())
+                {
+                    VinoApplication.getInstance().exitApp();
+                }
             }
             @Override
             public void OnInstall() {
