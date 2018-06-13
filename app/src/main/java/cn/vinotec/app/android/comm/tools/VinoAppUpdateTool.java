@@ -2,6 +2,7 @@ package cn.vinotec.app.android.comm.tools;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -12,11 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,13 +26,18 @@ import com.yanzhenjie.permission.Permission;
 import cn.vinotec.app.android.comm.VinoApplication;
 import cn.vinotec.app.android.comm.entity.ApiReply;
 import cn.vinotec.app.android.comm.entity.AppVersionEntity;
+import cn.vinotec.app.android.comm.http.RetrofitServiceManager;
 import cn.vinotec.app.android.comm.https.AppCommDao;
 import cn.vinotec.app.android.comm.library.R;
+import cn.vinotec.app.android.comm.service.ICommService;
 import cn.vinotec.app.android.comm.utils.ApplicationUtil;
 import cn.vinotec.app.android.comm.utils.StringUtil;
 import cn.vinotec.app.android.comm.utils.ToastUtil;
 import cn.vinotec.app.android.comm.view.VinoAppDownloadDialog;
 import cn.vinotec.app.android.comm.view.VinoAppUpdateDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VinoAppUpdateTool
 {
@@ -210,7 +214,8 @@ public class VinoAppUpdateTool
 			return;
 		}
 		inCheck = true;
-		new DoGetVersionTask(ACTION_CHECK_SILENT).execute();
+		getVersionInfo(ACTION_CHECK_SILENT);
+		//new DoGetVersionTask(ACTION_CHECK_SILENT).execute();
 	}
 
     public static void check(Context context)
@@ -234,7 +239,8 @@ public class VinoAppUpdateTool
 			return;
 		}
 		inCheck = true;
-		new DoGetVersionTask(ACTION_CHECK).execute();
+		//new DoGetVersionTask(ACTION_CHECK).execute();
+		getVersionInfo(ACTION_CHECK);
 	}
 
     /**
@@ -242,48 +248,78 @@ public class VinoAppUpdateTool
      */
     private void checkInfo()
     {
-        new DoGetVersionTask(ACTION_CHECK_INFO).execute();
+		getVersionInfo(ACTION_CHECK_INFO);
+        //new DoGetVersionTask(ACTION_CHECK_INFO).execute();
     }
 
-	/* 获取最新版本信息 */
-    private class DoGetVersionTask extends AsyncTask<String, String, ApiReply<AppVersionEntity>>
+    private void getVersionInfo(final int action)
 	{
-		private int action;
-
-		public DoGetVersionTask(int action)
-		{
-			this.action = action;
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-			super.onPreExecute();
-		}
-
-		protected ApiReply<AppVersionEntity> doInBackground(String... params)
-		{
-			ApiReply<AppVersionEntity> reply = new ApiReply<AppVersionEntity>();
-			AppCommDao dao = new AppCommDao(VinoApplication.getContext());
-			String version = ApplicationUtil.getVersionName(VinoApplication.getContext());
-			reply = dao.DoGetAppVersionInfo(VinoAppKey, version + "");
-			return reply;
-		}
-
-		protected void onPostExecute(ApiReply<AppVersionEntity> reply)
-		{
-			inCheck = false;
-            VersionInfo = null;
-			if (reply == null)
-			{
-				ToastUtil.makeText(VinoApplication.getContext(), "当前网络状况不良！", Toast.LENGTH_SHORT).show();
-			}else if (reply.getCode() == 0)
-			{
-				VersionInfo = reply.getData();
+		ICommService service = RetrofitServiceManager.getInstance().create(ICommService.class);
+		String version = ApplicationUtil.getVersionName(VinoApplication.getContext());
+		String url = String.format(VinoAppUpdateTool.AppUpdateCheckUrl, VinoAppKey, version);
+		Call<ApiReply<AppVersionEntity>> call = service.getAppVersion(url);
+		call.enqueue(new Callback<ApiReply<AppVersionEntity>>() {
+			@Override
+			public void onResponse(Call<ApiReply<AppVersionEntity>> call, Response<ApiReply<AppVersionEntity>> response) {
+				inCheck = false;
+				VersionInfo = null;
+				if (response == null || response.body() == null)
+				{
+					ToastUtil.makeText(VinoApplication.getContext(), "获取应用版本信息出错！", Toast.LENGTH_SHORT).show();
+				}else if (response.body().getCode() == 0)
+				{
+					VersionInfo = response.body().getData();
+				}
+				mHandler.sendEmptyMessage(action);
 			}
-            mHandler.sendEmptyMessage(action);
-		}
+
+			@Override
+			public void onFailure(Call<ApiReply<AppVersionEntity>> call, Throwable t) {
+				t.printStackTrace();
+				ToastUtil.makeText(VinoApplication.getContext(), "获取应用版本信息出错！", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
+
+//	/* 获取最新版本信息 */
+//    private class DoGetVersionTask extends AsyncTask<String, String, ApiReply<AppVersionEntity>>
+//	{
+//		private int action;
+//
+//		public DoGetVersionTask(int action)
+//		{
+//			this.action = action;
+//		}
+//
+//		@Override
+//		protected void onPreExecute()
+//		{
+//			super.onPreExecute();
+//		}
+//
+//		protected ApiReply<AppVersionEntity> doInBackground(String... params)
+//		{
+//			ApiReply<AppVersionEntity> reply = new ApiReply<AppVersionEntity>();
+//			AppCommDao dao = new AppCommDao(VinoApplication.getContext());
+//			String version = ApplicationUtil.getVersionName(VinoApplication.getContext());
+//			reply = dao.DoGetAppVersionInfo(VinoAppKey, version + "");
+//			return reply;
+//		}
+//
+//		protected void onPostExecute(ApiReply<AppVersionEntity> reply)
+//		{
+//			inCheck = false;
+//            VersionInfo = null;
+//			if (reply == null)
+//			{
+//				ToastUtil.makeText(VinoApplication.getContext(), "当前网络状况不良！", Toast.LENGTH_SHORT).show();
+//			}else if (reply.getCode() == 0)
+//			{
+//				VersionInfo = reply.getData();
+//			}
+//            mHandler.sendEmptyMessage(action);
+//		}
+//	}
 
 	/**
 	 * 显示软件更新对话框
@@ -461,36 +497,5 @@ public class VinoAppUpdateTool
                 .install()
                 .file(apkfile)
                 .start();
-
-//		try
-//        {
-//            // 通过Intent安装APK文件
-//            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            //版本在7.0以上是不能直接通过uri访问的
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
-//                // 由于没有在Activity环境下启动Activity,设置下面的标签
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
-//                Uri apkUri = FileProvider.getUriForFile(context, VinoApplication.getContext().getPackageName() + ".fileprovider", apkfile);
-//                Log.d("VinoAppUpdateTool", "apkUri:" + apkUri.toString());
-//                //添加这一句表示对目标应用临时授权该Uri所代表的文件
-//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-//            } else {
-//                intent.setDataAndType(Uri.fromFile(apkfile), "application/vnd.android.package-archive");
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            }
-//            VinoApplication.getContext().startActivity(intent);
-//        }
-//        catch (Exception ex)
-//        {
-//            ToastUtil.debugToast(context, ex.getMessage());
-//            ex.printStackTrace();
-//
-//            ToastUtil.showShortToast(context, "安装出错，正在尝试重新安装！");
-//            Uri uri = Uri.parse(VersionInfo.getDownload_url());
-//            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//            context.startActivity(intent);
-//        }
 	}
 }

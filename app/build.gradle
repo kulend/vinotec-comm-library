@@ -5,8 +5,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 29
-        versionName "2.9"
+        versionCode 30
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -29,4 +29,6 @@ dependencies {
     compile files('libs/httpmime-4.2.1.jar')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.yanzhenjie:permission:2.0.0-rc10'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.4.0'
 }
