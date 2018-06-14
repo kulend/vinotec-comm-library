@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class RetrofitServiceManager {
 
@@ -31,7 +31,7 @@ public class RetrofitServiceManager {
         mRetrofit = new Retrofit.Builder()
                 .client(builder.build())
                 //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create())
                 .baseUrl("http://www.baidu.com/")
                 .build();
     }

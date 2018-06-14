@@ -1,6 +1,6 @@
 package cn.vinotec.app.android.comm.entity;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AppVersionEntity
 {

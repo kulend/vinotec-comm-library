@@ -105,7 +105,6 @@ public class DataCleanManager
 		// cleanDatabases(context);
 		// cleanSharedPreference(context);
 		cleanFiles(context);
-		RequestCacheUtil.clearCache();
 		for (String filePath : filepath)
 		{
 			cleanCustomCache(filePath);

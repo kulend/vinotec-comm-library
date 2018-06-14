@@ -15,8 +15,6 @@ package cn.vinotec.app.android.comm.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.http.impl.auth.UnsupportedDigestAlgorithmException;
-
 import android.util.Log;
 
 /**
@@ -37,7 +35,6 @@ public final class MD5 {
 			sDigest = MessageDigest.getInstance(ALGORITHM);
 		} catch (NoSuchAlgorithmException e) {
 			Log.e(LOG_TAG, "Get MD5 Digest failed.");
-			throw new UnsupportedDigestAlgorithmException(ALGORITHM, e);
 		}
 	}
 

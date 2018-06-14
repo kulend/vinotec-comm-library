@@ -10,15 +10,17 @@ import android.view.Display;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cn.vinotec.app.android.comm.activity.ImagePagerActivity;
 import cn.vinotec.app.android.comm.entity.ShowImageEntity;
 import cn.vinotec.app.android.comm.tools.ResourcesManager;
 import cn.vinotec.app.android.comm.tools.VinoAppUpdateTool;
 import cn.vinotec.app.android.comm.utils.StringUtil;
 import cn.vinotec.app.android.comm.utils.ToastUtil;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -184,9 +186,9 @@ public class VinoWebViewClient extends WebViewClient {
         }
         HashMap<String, Object> pms = new HashMap<String, Object>();
         ObjectMapper mObjectMapper = new ObjectMapper();
-        mObjectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mObjectMapper.configure(DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-        mObjectMapper.configure(DeserializationConfig.Feature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        mObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mObjectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        mObjectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
         try {
             pms = mObjectMapper.readValue(pmsStr, new TypeReference<HashMap<String, Object>>() {
             });
