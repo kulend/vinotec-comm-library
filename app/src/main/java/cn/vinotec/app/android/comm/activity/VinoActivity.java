@@ -14,7 +14,6 @@ import cn.vinotec.app.android.comm.VinoApplication;
 import cn.vinotec.app.android.comm.annotation.VinoActivityAnnotation;
 import cn.vinotec.app.android.comm.annotation.VinoViewInject;
 import cn.vinotec.app.android.comm.library.R;
-import cn.vinotec.app.android.comm.tools.AsynImageLoader;
 import cn.vinotec.app.android.comm.tools.VinoAppUpdateTool;
 import cn.vinotec.app.android.comm.utils.StringUtil;
 import cn.vinotec.app.android.comm.utils.ViewInjectUtil;
@@ -42,8 +41,6 @@ public class VinoActivity extends Activity implements VinoBasePage {
 	protected VinoLoadingDialog mloadingDialog;
 	protected List<AsyncTask> mAsyncTasks = new ArrayList<AsyncTask>();
 
-	private AsynImageLoader asynImageLoader;
-
 	protected boolean TwoBackClickFinish = false;
 	protected boolean TwoBackClickExit = false;
 
@@ -62,14 +59,6 @@ public class VinoActivity extends Activity implements VinoBasePage {
 		inflater = getLayoutInflater();
 		app = (VinoApplication) getApplication();
 		app.addActivity(this);
-
-		try
-		{
-			asynImageLoader = app.getLocalService().getAsynImageLoader();
-		}
-		catch (Exception ex)
-		{
-		}
 
         initWindow();
 
@@ -201,22 +190,6 @@ public class VinoActivity extends Activity implements VinoBasePage {
 	{
 		super.finish();
 		overridePendingTransition(R.anim.push_right_in, R.anim.push_right_out);
-	}
-
-	@Deprecated
-	public void showImageAsyn(ImageView imageView, String url, int resId)
-	{
-		if (StringUtil.isBlank(url) || imageView == null || asynImageLoader == null)
-		{
-			return;
-		}
-		asynImageLoader.showImageAsyn(imageView, url, resId);
-	}
-
-    @Deprecated
-	public void showImageAsyn(ImageView imageView, String url)
-	{
-		showImageAsyn(imageView, url, 0);
 	}
 
 	/**

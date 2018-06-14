@@ -56,7 +56,7 @@ public class VinoApplication extends Application
 		}
 
         //初始化图片加载工具
-		VinoImageLoadTool.init(EmptyPhotoResId);
+		VinoImageLoadTool.init(EmptyPhotoResId, EmptyPhotoResId);
 
 		ToastUtil.debugToast(this, "当前处于调试模式!");
 	}

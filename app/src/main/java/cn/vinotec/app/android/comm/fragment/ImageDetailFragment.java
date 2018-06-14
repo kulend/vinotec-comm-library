@@ -2,8 +2,11 @@ package cn.vinotec.app.android.comm.fragment;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
+
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +14,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+
 import cn.vinotec.app.android.comm.entity.ShowImageEntity;
 import cn.vinotec.app.android.comm.library.R;
 import cn.vinotec.app.android.comm.utils.BitMapUtil;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
 
 public class ImageDetailFragment extends Fragment {
 	private ShowImageEntity mImage;
@@ -25,8 +31,7 @@ public class ImageDetailFragment extends Fragment {
 	private ProgressBar progressBar;
 	private PhotoViewAttacher mAttacher;
 
-	public static ImageDetailFragment newInstance(ShowImageEntity image)
-	{
+	public static ImageDetailFragment newInstance(ShowImageEntity image) {
 		final ImageDetailFragment f = new ImageDetailFragment();
 
 		final Bundle args = new Bundle();
@@ -47,14 +52,14 @@ public class ImageDetailFragment extends Fragment {
 		final View v = inflater.inflate(R.layout.comm_image_detail_fragment, container, false);
 		mImageView = (ImageView) v.findViewById(R.id.image);
 		mAttacher = new PhotoViewAttacher(mImageView);
-		
+
 		mAttacher.setOnPhotoTapListener(new OnPhotoTapListener() {
 			@Override
 			public void onPhotoTap(View arg0, float arg1, float arg2) {
 				getActivity().finish();
 			}
 		});
-		
+
 		progressBar = (ProgressBar) v.findViewById(R.id.loading);
 		return v;
 	}
@@ -62,64 +67,32 @@ public class ImageDetailFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
-		if (mImage != null)
-		{
-			if (mImage.getType() == ShowImageEntity.Type_URL)
-			{
-				ImageLoader.getInstance().displayImage(mImage.getPath(), mImageView, new SimpleImageLoadingListener() {
-					@Override
-					public void onLoadingStarted(String imageUri, View view)
-					{
-						progressBar.setVisibility(View.VISIBLE);
-					}
 
+		if (mImage != null) {
+			if (mImage.getType() == ShowImageEntity.Type_URL) {
+                progressBar.setVisibility(View.VISIBLE);
+				Glide.with(ImageDetailFragment.this).load(mImage.getPath()).listener(new RequestListener<Drawable>() {
 					@Override
-					public void onLoadingFailed(String imageUri, View view, FailReason failReason)
-					{
-						String message = null;
-						switch (failReason.getType()) {
-						case IO_ERROR:
-							message = "下载错误";
-							break;
-						case DECODING_ERROR:
-							message = "图片无法显示";
-							break;
-						case NETWORK_DENIED:
-							message = "网络有问题，无法下载";
-							break;
-						case OUT_OF_MEMORY:
-							message = "图片太大无法显示";
-							break;
-						case UNKNOWN:
-							message = "未知的错误";
-							break;
-						}
-						Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-						progressBar.setVisibility(View.GONE);
+					public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Toast.makeText(getActivity(), "图片加载出错！", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+					    return false;
 					}
-
 					@Override
-					public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-					{
-						progressBar.setVisibility(View.GONE);
-						mAttacher.update();
+					public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        progressBar.setVisibility(View.GONE);
+                        mAttacher.update();
+					    return false;
 					}
-				});
-			}
-			else if (mImage.getType() == ShowImageEntity.Type_LOCAL)
-			{
+				}).into(mImageView);
+			} else if (mImage.getType() == ShowImageEntity.Type_LOCAL) {
 				Bitmap bmp = BitMapUtil.getBitmap(mImage.getPath(), 500, 500);
 				mImageView.setImageBitmap(bmp);
-			}
-			else
-			{
+			} else {
 				// TODO:设置其他类型时的显示
 				mImageView.setImageResource(R.drawable.comm_empty_photo);
 			}
-		}
-		else
-		{
+		} else {
 			mImageView.setImageResource(R.drawable.comm_empty_photo);
 		}
 	}

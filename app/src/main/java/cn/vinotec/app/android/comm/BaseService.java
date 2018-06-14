@@ -4,13 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import cn.vinotec.app.android.comm.tools.AsynImageLoader;
 
 public class BaseService extends Service
 {
 	private final IBinder binder = new LocalBinder();
-	private AsynImageLoader asynImageLoader = null;
-	
+
 	public class LocalBinder extends Binder
 	{
 		public BaseService getService() {
@@ -25,7 +23,6 @@ public class BaseService extends Service
 	
 	public BaseService() {
 		super();
-		asynImageLoader = new AsynImageLoader();
 	}
 	
 	@Override
@@ -34,10 +31,4 @@ public class BaseService extends Service
 		super.onCreate();
 	}
 
-	/**
-	 * 取得异步加载图片实例
-	 */
-	public AsynImageLoader getAsynImageLoader(){ 
-        return asynImageLoader; 
-    }
 }

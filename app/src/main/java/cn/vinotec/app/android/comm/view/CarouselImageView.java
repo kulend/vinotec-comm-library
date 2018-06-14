@@ -11,9 +11,12 @@ import android.util.AttributeSet;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.module.LibraryGlideModule;
+
 import cn.vinotec.app.android.comm.entity.ImageAdEntity;
 import cn.vinotec.app.android.comm.library.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 广告图片自动轮播控件
@@ -303,8 +306,8 @@ public class CarouselImageView extends LinearLayout {
             });
             imageView.setTag(imageUrl);
             container.addView(imageView);
-            ImageLoader.getInstance().displayImage(imageUrl, imageView);// 使用ImageLoader对图片进行加装！
-            //mImageCycleViewListener.displayImage(imageUrl, imageView);
+
+            Glide.with(imageView).load(imageUrl).into(imageView);
             return imageView;
         }
 
