@@ -1,5 +1,6 @@
 package cn.vinotec.app.android.comm;
 
+import java.lang.annotation.Annotation;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import android.support.multidex.MultiDex;
 
 import cn.vinotec.app.android.comm.annotation.VinoApplicationAnnotation;
 import cn.vinotec.app.android.comm.library.R;
-import cn.vinotec.app.android.comm.sqlite.DBHelper;
 
 import cn.vinotec.app.android.comm.tools.VinoImageLoadTool;
 import cn.vinotec.app.android.comm.utils.ToastUtil;
@@ -59,8 +59,6 @@ public class VinoApplication extends Application
 		VinoImageLoadTool.init(EmptyPhotoResId);
 
 		ToastUtil.debugToast(this, "当前处于调试模式!");
-
-		DBHelper.getInstance(this).ExecSQL("DROP TABLE IF EXISTS temp1");
 	}
 
 	@Override
@@ -98,6 +96,27 @@ public class VinoApplication extends Application
 			if(clazz.isAnnotationPresent(VinoApplicationAnnotation.class))
 			{
 				annotation = (VinoApplicationAnnotation)clazz.getAnnotation(VinoApplicationAnnotation.class);
+			}else
+			{
+				annotation = new VinoApplicationAnnotation(){
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return null;
+					}
+
+					@Override
+					public String LimmersionBarColor() {
+						return "";
+					}
+					@Override
+					public String BaseApiUrl() {
+						return "http://www.baidu.com/";
+					}
+					@Override
+					public int EmptyImageResId() {
+						return 0;
+					}
+				};
 			}
 		}
 		return annotation;

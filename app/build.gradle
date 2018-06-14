@@ -22,10 +22,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation files('libs/systembartint-1.0.4.jar')
     implementation files('libs/universal-image-loader-1.9.1.jar')
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.gyf.barlibrary:barlibrary:2.3.0'
     implementation 'com.yanzhenjie:permission:2.0.0-rc10'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    compile 'com.squareup.retrofit2:converter-jackson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
 }

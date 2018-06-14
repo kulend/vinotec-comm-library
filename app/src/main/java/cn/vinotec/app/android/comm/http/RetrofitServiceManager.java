@@ -2,6 +2,7 @@ package cn.vinotec.app.android.comm.http;
 
 import java.util.concurrent.TimeUnit;
 
+import cn.vinotec.app.android.comm.VinoApplication;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -32,7 +33,7 @@ public class RetrofitServiceManager {
                 .client(builder.build())
                 //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(JacksonConverterFactory.create())
-                .baseUrl("http://www.baidu.com/")
+                .baseUrl(VinoApplication.getInstance().getAnnotation().BaseApiUrl())
                 .build();
     }
 

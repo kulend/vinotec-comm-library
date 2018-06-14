@@ -3,7 +3,6 @@ package cn.vinotec.app.android.comm.utils;
 import java.io.File;
 import java.math.BigDecimal;
 
-import cn.vinotec.app.android.comm.sqlite.DBHelper;
 import android.content.Context;
 import android.os.Environment;
 
@@ -31,11 +30,6 @@ public class DataCleanManager
 	public static void cleanDatabases(Context context)
 	{
 		deleteFilesByDirectory(new File("/data/data/" + context.getPackageName() + "/databases"));
-	}
-	
-	public static void reCreateDataBase(Context context)
-	{
-		DBHelper.getInstance(context).reCreate();
 	}
 
 	/**
@@ -115,7 +109,6 @@ public class DataCleanManager
 	{
 		cleanInternalCache(context);
 		cleanExternalCache(context);
-		reCreateDataBase(context);
 		cleanSharedPreference(context);
 	}
 	

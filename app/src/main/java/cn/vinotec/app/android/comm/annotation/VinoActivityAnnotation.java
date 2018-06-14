@@ -15,7 +15,7 @@ public @interface VinoActivityAnnotation {
 
     boolean TwoBackClickFinish() default false;
 
-    boolean LimmersionMode() default true;
+    String LimmersionBarColor() default "";
 
     boolean CheckVersion() default false;
 }

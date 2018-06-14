@@ -1,7 +1,5 @@
 package cn.vinotec.app.android.comm.annotation;
 
-import cn.vinotec.app.android.comm.library.R;
-
 import java.lang.annotation.*;
 
 /**
@@ -13,9 +11,9 @@ import java.lang.annotation.*;
 @Inherited
 public @interface VinoApplicationAnnotation {
 
-    boolean LimmersionMode() default true;
-
-    String LimmersionStatusColor() default "#FFFFFF";
+    String LimmersionBarColor() default "";
 
     int EmptyImageResId() default 0;
+
+    String BaseApiUrl() default  "http://www.baidu.com/";
 }

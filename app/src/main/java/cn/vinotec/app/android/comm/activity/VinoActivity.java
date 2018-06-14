@@ -5,16 +5,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.Toast;
 import cn.vinotec.app.android.comm.VinoApplication;
 import cn.vinotec.app.android.comm.annotation.VinoActivityAnnotation;
-import cn.vinotec.app.android.comm.annotation.VinoApplicationAnnotation;
 import cn.vinotec.app.android.comm.annotation.VinoViewInject;
 import cn.vinotec.app.android.comm.library.R;
 import cn.vinotec.app.android.comm.tools.AsynImageLoader;
@@ -23,7 +20,7 @@ import cn.vinotec.app.android.comm.utils.StringUtil;
 import cn.vinotec.app.android.comm.utils.ViewInjectUtil;
 import cn.vinotec.app.android.comm.view.VinoLoadingDialog;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.gyf.barlibrary.ImmersionBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +32,6 @@ public class VinoActivity extends Activity implements VinoBasePage {
 	private static final String TAG = "VinoActivity";
     protected VinoActivityAnnotation annotation;
 	protected VinoViewInject viewInject;
-    private SystemBarTintManager tintManager;
-    private boolean ImmersionMode = true;
 
 	public LayoutInflater inflater;
 	protected Context context;
@@ -109,18 +104,18 @@ public class VinoActivity extends Activity implements VinoBasePage {
     @TargetApi(19)
     private void initWindow() {
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        if(annotation != null)
+
+		ImmersionBar bar = ImmersionBar.with(this);
+		String barColor = VinoApplication.getInstance().getAnnotation().LimmersionBarColor();
+        if(annotation != null && StringUtil.isBlank(annotation.LimmersionBarColor()))
         {
-            ImmersionMode = annotation.LimmersionMode();
+            barColor = annotation.LimmersionBarColor();
         }
-        VinoApplicationAnnotation appAnno = VinoApplication.getInstance().getAnnotation();
-        if (appAnno != null && appAnno.LimmersionMode() && ImmersionMode && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintColor(Color.parseColor(appAnno.LimmersionStatusColor()));
-            tintManager.setStatusBarTintEnabled(true);
+        if(StringUtil.isBlank(barColor))
+        {
+            bar.barColor(barColor);
         }
+		bar.init();
     }
 
 	@Override
@@ -166,6 +161,8 @@ public class VinoActivity extends Activity implements VinoBasePage {
 			mloadingDialog.dismiss();
 			mloadingDialog = null;
 		}
+
+		ImmersionBar.with(this).destroy();
 	}
 
 	public void openActivity(Class<?> pClass) {
