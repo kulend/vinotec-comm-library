@@ -107,11 +107,11 @@ public class VinoActivity extends Activity implements VinoBasePage {
 
 		ImmersionBar bar = ImmersionBar.with(this);
 		String barColor = VinoApplication.getInstance().getAnnotation().LimmersionBarColor();
-        if(annotation != null && StringUtil.isBlank(annotation.LimmersionBarColor()))
+        if(annotation != null && !StringUtil.isBlank(annotation.LimmersionBarColor()))
         {
             barColor = annotation.LimmersionBarColor();
         }
-        if(StringUtil.isBlank(barColor))
+        if(!StringUtil.isBlank(barColor))
         {
             bar.barColor(barColor);
         }
